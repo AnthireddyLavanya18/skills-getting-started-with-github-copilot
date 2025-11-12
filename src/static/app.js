@@ -87,6 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        // Refresh activities to show the new participant
+        await fetchActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
@@ -105,6 +107,39 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  // Hide bullet points for the participant list
+  const style = document.createElement('style');
+  style.innerHTML = `
+    #activities-list {
+      list-style-type: none;
+      padding: 0;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Function to unregister a participant
+  function unregisterParticipant(event) {
+    const participantItem = event.target.closest('li');
+    if (participantItem) {
+      participantItem.remove();
+    }
+  }
+
+  // Example of rendering participants (modify as per your existing logic)
+  function renderParticipant(name) {
+    const li = document.createElement('li');
+    li.textContent = name;
+    const deleteIcon = document.createElement('span');
+    deleteIcon.textContent = '❌'; // You can replace this with an actual icon
+    deleteIcon.style.cursor = 'pointer';
+    deleteIcon.addEventListener('click', unregisterParticipant);
+    li.appendChild(deleteIcon);
+    activitiesList.appendChild(li);
+  }
+
+  // Example usage
+  renderParticipant('John Doe'); // Call this function for each participant
 
   // Initialize app
   fetchActivities();
